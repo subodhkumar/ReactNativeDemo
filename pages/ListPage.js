@@ -162,7 +162,7 @@ export default class ListPage extends Component {
   };
 
   onItemPress = ({ pid }) => {
-    this.props.navigation.navigate("Detail", { pid: pid });
+    this.props.navigation.navigate("Detail", { pid: pid, startTime: Date.now() });
   };
 
   render() {

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "EsRnList",
-    "slug": "EsRnList",
+    "name": "people_react",
+    "slug": "people_react",
     "platforms": [
       "ios",
       "android",

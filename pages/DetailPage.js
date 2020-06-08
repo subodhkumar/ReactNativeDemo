@@ -96,6 +96,7 @@ export default class DetailsPage extends Component {
     fetch(URL)
       .then((res) => res.json())
       .then((res) => {
+        this.dataLoadTime = Date.now()-this.props.route.params.startTime;
         this.setState({
           loading: false,
           data: res,
@@ -110,6 +111,7 @@ export default class DetailsPage extends Component {
       });
   }
   componentDidMount() {
+    this.pageLoadTime = Date.now()-this.props.route.params.startTime;
     this._fetchData();
   }
   render() {
@@ -131,14 +133,14 @@ export default class DetailsPage extends Component {
             flexDirection: "column",
           }}
         >
-          <View style={{ backgroundColor: "#fff", height: "60%" }}>
+          <View style={{ backgroundColor: "#fff", height: "55%" }}>
             <Image
               style={{ width: "100%", height: "100%" }}
               source={{ uri: this.state.data.picture.large }}
             ></Image>
           </View>
           <View
-            style={{ backgroundColor: "#fff", height: "40%", padding: "5%" }}
+            style={{ backgroundColor: "#fff", height: "30%", padding: "5%" }}
           >
             <Text style={[styles.large, styles.primary, styles.bold]}>
               {this.state.data.name.first} {this.state.data.name.last}
@@ -160,7 +162,16 @@ export default class DetailsPage extends Component {
               </Text>
               <Text> {this.state.data.location.country} </Text>
               <Text> {this.state.data.location.postcode} </Text>
+              
+              
             </View>
+
+          </View>
+          <View  style={{ backgroundColor: "#fff", height: "15%", padding: "5%" }}>
+          <Text style={[styles.small, styles.mute]}> Page Load: </Text>
+          <Text style={[styles.small, styles.mute, styles.bold]}> {this.pageLoadTime}ms</Text>
+          <Text style={[styles.small, styles.mute]}> Data Loaded:</Text>
+          <Text style={[styles.small, styles.mute, styles.bold]}> {this.dataLoadTime}ms</Text>
           </View>
         </View>
       );
