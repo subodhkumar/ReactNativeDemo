@@ -3,7 +3,7 @@ import { View, Text, ActivityIndicator, Image, StyleSheet, Animated, Easing } fr
 import ItemDetails from "../components/ItemDetail";
 import { ErrorView, LoadingView, LoadingList } from "./ListPage";
 export function DetailPage({ route, navigation }) {
-  const { pid } = route.params;
+  const { item } = route.params;
 }
 const styles = StyleSheet.create({
   medium: {
@@ -87,8 +87,8 @@ export default class DetailsPage extends Component {
     super(props);
   }
   state = {
-    loading: true,
-    data: null,
+    loading: false,
+    data: this.props.route.params.item,
     error: false,
   };
   _fetchData() {
@@ -112,7 +112,8 @@ export default class DetailsPage extends Component {
   }
   componentDidMount() {
     this.pageLoadTime = Date.now()-this.props.route.params.startTime;
-    this._fetchData();
+    this.dataLoadTime = Date.now()-this.props.route.params.startTime;
+    // this._fetchData();
   }
   render() {
     if (this.state.error) {
@@ -169,9 +170,9 @@ export default class DetailsPage extends Component {
           </View>
           <View  style={{ backgroundColor: "#fff", height: "15%", padding: "5%" }}>
           <Text style={[styles.small, styles.mute]}> Page Load: </Text>
-          <Text style={[styles.small, styles.mute, styles.bold]}> {this.pageLoadTime}ms</Text>
-          <Text style={[styles.small, styles.mute]}> Data Loaded:</Text>
-          <Text style={[styles.small, styles.mute, styles.bold]}> {this.dataLoadTime}ms</Text>
+          <Text style={[styles.small, styles.mute, styles.bold]}> {Date.now()-this.props.route.params.startTime}ms</Text>
+          {/* <Text style={[styles.small, styles.mute]}> Data Loaded:</Text>
+          <Text style={[styles.small, styles.mute, styles.bold]}> {this.dataLoadTime}ms</Text> */}
           </View>
         </View>
       );

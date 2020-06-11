@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Component, useRef } from "react";
+import React, { useState, useEffect, PureComponent, Component, useRef } from "react";
 import {
   Text,
   View,
@@ -9,11 +9,12 @@ import {
   Animated,
   Easing
 } from "react-native";
-import List from "../components/List";
 import { FlatList } from "react-native-gesture-handler";
 import ListItem from "../components/ListItem";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import * as customData from './people100.json';
 
+const LOAD_COUNT = 10;
 const styles = StyleSheet.create({
   medium: {
     fontSize: 18,
@@ -96,7 +97,7 @@ export function LoadingList(){
     </View>
   )
 }
-export default class ListPage extends Component {
+export default class ListPage extends PureComponent {
   constructor(props) {
     super(props);
     this.onItemPress = this.onItemPress.bind(this);
@@ -108,7 +109,8 @@ export default class ListPage extends Component {
     error: null,
   };
   componentDidMount() {
-    this._fetchData();
+    // this._fetchData();
+    this._fetchJSONData();
   }
   _handleRefresh = () => {
     this.setState(
@@ -137,10 +139,19 @@ export default class ListPage extends Component {
         loadingMore: true,
       }),
       () => {
-        this._fetchData();
+        this._fetchJSONData();
+        // this._fetchData();
       }
     );
   };
+
+  _fetchJSONData = ()=>{
+    this.setState((prevState,nextProps)=>({
+      data : this.state.page===1 ? customData.content.slice(0,LOAD_COUNT*this.state.page): [...this.state.data, ...customData.content.slice(LOAD_COUNT*(this.state.page-1), LOAD_COUNT*(this.state.page))],
+      loading: false,
+      error: false,
+    }))
+  }
   _fetchData = () => {
     const { page } = this.state;
     const URL = `http://pkr5vcnw9rj0.cloud.wavemakeronline.com/PEOPLE/services/people/people?size=20&page=${page}`;
@@ -161,8 +172,9 @@ export default class ListPage extends Component {
       });
   };
 
-  onItemPress = ({ pid }) => {
-    this.props.navigation.navigate("Detail", { pid: pid, startTime: Date.now() });
+  onItemPress = (item) => {
+    // this.props.navigation.navigate("Detail", { pid: pid, startTime: Date.now() });
+    this.props.navigation.navigate("Detail", { item: item, startTime: Date.now() });
   };
 
   render() {
@@ -189,7 +201,8 @@ export default class ListPage extends Component {
         >
           <FlatList
             data={this.state.data}
-            keyExtractor={(item) => item.pid.toString()}
+            // keyExtractor={(item) => item.pid.toString()}
+            keyExtractor={(item) => item.email}
             renderItem={({ item }) => (
               <View
                 style={{
@@ -228,10 +241,10 @@ export default class ListPage extends Component {
             )}
             onEndReached={this._fetchDataAsync}
             onEndReachedThreshold={0.5}
-            initialNumToRender={10}
+            initialNumToRender={15}
             ListFooterComponent={this._renderFooter}
-            onRefresh={this._handleRefresh}
-            refreshing={this.state.refreshing}
+            // onRefresh={this._handleRefresh}
+            // refreshing={this.state.refreshing}
           ></FlatList>
         </View>
       );
